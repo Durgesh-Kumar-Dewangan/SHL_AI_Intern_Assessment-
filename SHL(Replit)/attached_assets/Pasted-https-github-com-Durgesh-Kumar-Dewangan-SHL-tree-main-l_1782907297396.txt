@@ -1,0 +1,13 @@
+https://github.com/Durgesh-Kumar-Dewangan/SHL/tree/main let and  use  all this code from repo here  
+fix build and fill actually verified — this is the honest gap
+
+1. Never run against a real LLM. Every test uses a mocked `complete_json`. I have zero evidence that Groq/Gemini/whatever actually returns clean, parseable JSON in the exact `{action, reply, recommended_urls, end_of_conversation}` shape reliably across 8 turns of a real conversation. JSON-mode reliability varies by provider and this is the single biggest real risk in the whole project.
+2. Recall@10 is unknown. The eval harness (`eval/run_eval.py`) exists and works mechanically, but I never ran it against a live LLM — so I have no actual recall number, just plumbing that's ready to produce one.
+3. My eval harness isn't equivalent to their grader. SHL's harness uses an LLM playing the persona, improvising phrasing. Mine replays the literal scripted lines from the traces. That's useful for regression testing but doesn't tell you how the agent handles a real free-form conversation — which is exactly what's being graded.
+4. Nothing is deployed. The assignment explicitly requires "Public API endpoint URL. Your deployed FastAPI service. Both /health and /chat must be reachable at submission time." I only produced a zip. This alone means the submission isn't complete yet — there's no public URL to submit.
+5. Refine-continuity is a heuristic, not guaranteed. Since the API is stateless and the client only sends back plain `reply` text, I reconstruct "current shortlist" by scanning the assistant's last reply for catalog name substrings. If the LLM's reply text doesn't happen to mention the item names plainly, that inference silently returns nothing — I never stress-tested this against a real multi-turn refine conversation.
+do actually do before you submit this
+
+1. Get a free Groq or Gemini key, drop it in `.env`, run `pytest` (already passes) then `python -m eval.run_eval` against the local server — see what Recall@10 and probe pass-rate really look like against your own traces.
+2. Deploy it (Render is easiest — `render.yaml` is already there) and confirm `/health` and `/chat` are reachable publicly.
+3. Manually run 2-3 of the C1–C10 conversations by hand through the deployed endpoint and read the actual replies — not mocked — to catch prompt-quality issues (over-clarifying, weak comparisons, etc.) before the real grader does.
