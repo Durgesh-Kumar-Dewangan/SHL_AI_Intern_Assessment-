@@ -1,6 +1,7 @@
-def main():
-    print("Hello from repl-nix-workspace!")
+from fastapi import FastAPI
 
+app = FastAPI()   # ← This line must exist at the top level (not inside a function)
 
-if __name__ == "__main__":
-    main()
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
