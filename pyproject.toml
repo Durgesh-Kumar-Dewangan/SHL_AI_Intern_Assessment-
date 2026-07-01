@@ -1,0 +1,22 @@
+[project]
+name = "shl-assessment-recommender"
+version = "1.0.0"
+description = "Conversational SHL assessment recommender with BM25 retrieval and web UI"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.115.6",
+    "httpx==0.28.1",
+    "pydantic==2.10.4",
+    "pydantic-settings==2.7.0",
+    "python-dotenv==1.0.1",
+    "rank-bm25==0.2.2",
+    "tenacity==9.0.0",
+    "uvicorn[standard]==0.32.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
